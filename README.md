@@ -4,6 +4,7 @@ This tool was created by [Little Green Man](https://lgm.ltd) to help you discove
 
 ## Use
 
+<<<<<<< HEAD
 To use this tool, clone this repository to your local computer and run `mastodon-follows`.
 
 Required arguments:
@@ -11,6 +12,21 @@ Required arguments:
 -   url: The URL of the following page to gather data from
 
 Optional arguments:
+=======
+To use this tool, first add it to your machine:
+
+```
+composer global require little-green-man/mastodon-follows
+```
+
+Then run `mastodon-follows`, with the arguments as follows:
+
+Required arguments
+
+-   url: The URL of the following page to gather data from
+
+Optional arguments
+>>>>>>> d04796b (v1.0.0)
 
 -   personalInstance: Provide this to be provided with links that allow you to follow users more easily
 -   maxPages: Provide this as a positive integer to stop processing after so many pages of users
