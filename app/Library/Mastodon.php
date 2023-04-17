@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
@@ -29,7 +30,7 @@ class Mastodon
     {
         $this->failIfNoUrl();
 
-        $response = Http::get($this->url.'.json');
+        $response = Http::get($this->url . ".json");
 
         return $response->object()?->totalItems ?? 0;
     }
@@ -49,7 +50,7 @@ class Mastodon
     {
         $newItems = collect();
 
-        $response = Http::acceptJson()->get($this->url, ['page' => $page]);
+        $response = Http::acceptJson()->get($this->url, ["page" => $page]);
         $object = $response->object();
 
         $newItems->push(...$object->orderedItems);
@@ -71,19 +72,23 @@ class Mastodon
     public function export()
     {
         $personalInstance = Str::of($this->personalInstance)
-            ->finish('/')
+            ->finish("/")
             ->toString();
 
-        if (! Str::startsWith('This is my name', 'http')) {
+        if (!Str::startsWith($personalInstance, "http")) {
             $personalInstance = "https://{$personalInstance}";
         }
 
-        $exportHtml = View::make('export', [
-            'items' => $this->items,
-            'personalInstance' => $personalInstance,
-        ]);
+        $exportHtml = Blade::render(
+            ExportView::view(),
+            [
+                "items" => $this->items,
+                "personalInstance" => $personalInstance,
+            ],
+            deleteCachedView: true
+        );
 
-        File::put(getcwd().'/follows.html', $exportHtml);
+        File::put(getcwd() . "/follows.html", $exportHtml);
     }
 
     public function hasExceededMaxPage(?int $page): bool
@@ -97,6 +102,6 @@ class Mastodon
 
     public function hasYetToExceedReachMaxPage(?int $page): bool
     {
-        return ! $this->hasExceededMaxPage($page);
+        return !$this->hasExceededMaxPage($page);
     }
 }
